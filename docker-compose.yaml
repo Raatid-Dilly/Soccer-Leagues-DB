@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  pg_football:
+  pgdatabase:
     environment:
        - POSTGRES_USER=${POSTGRES_USER}
        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -15,15 +15,15 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=root
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
     depends_on: 
-      - pg_football
+      - pgdatabase
     ports:
       - "8080:80"
   pythonapp:
     build: ./
-    command: sh -c "sleep 20s && cd code/soccer && python soccer_leagues.py --year 2021"
+    command: sh -c "sleep 20s && cd code/soccer && python soccer_leagues.py --year 2019"
     environment:
       - PG_USER=${POSTGRES_USER}
       - PG_PASSWORD=${POSTGRES_PASSWORD}
@@ -31,15 +31,13 @@ services:
       - PG_HOST=${POSTGRES_HOST}
       - PG_PORT=${POSTGRES_PORT}
     depends_on:
-      - pg_football
-  # dashboard:
-  #   image: metabase/metabase
-  #   container_name: dashboard
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./matabase-data:/metabase-data
-  #   environment:
-  #     - MB_DB_FILE=/metabase-data/metabase.db
-  #   depends_on:
-  #     - pythonapp
+      - pgdatabase
+  dashboard:
+    image: metabase/metabase
+    container_name: dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./metabase-data:/metabase-data
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
