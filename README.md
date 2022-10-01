@@ -22,9 +22,11 @@ Everything is ran in a Docker container. The **[docker-compose.yaml](https://git
 * ```pgdatabase``` -  Postgres Image
 * ```pgadmin``` - Used for local testing and can be viewed on localhost:8080 in a browser
 * ```pythonapp``` - script to run in the Docker container 
-* ```metabase``` - Metabase for dashboard on localhost:3000 in a browser
+* ```metabase``` - Metabase localhost:3000 in a browser
 
 ```
+File  43 lines (42 sloc)  1.09 KB
+
 version: '3.8'
 
 services:
@@ -33,8 +35,8 @@ services:
        - POSTGRES_USER=${POSTGRES_USER}
        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
        - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - ./soccer_postgres_data:/var/lib/postgresql/data:rw
+    # volumes:
+    #   - ./warehouse/soccer_postgres_data:/var/lib/postgresql/data:rw
     ports:
       - "5432:5432"
     restart: always
@@ -50,13 +52,13 @@ services:
       - "8080:80"
   pythonapp:
     build: ./
-    #command: sh -c "sleep 20s && python soccer_postgres.py --year 2019"
+    command: sh -c "sleep 20s && cd code/soccer && python soccer_leagues.py --year 2019"
     environment:
-      - WAREHOUSE_USER=${POSTGRES_USER}
-      - WAREHOUSE_PASSWORD=${POSTGRES_PASSWORD}
-      - WAREHOUSE_DB=${POSTGRES_DB}
-      - WAREHOUSE_HOST=${POSTGRES_HOST}
-      - WAREHOUSE_PORT=${POSTGRES_PORT}
+      - PG_USER=${POSTGRES_USER}
+      - PG_PASSWORD=${POSTGRES_PASSWORD}
+      - PG_DB=${POSTGRES_DB}
+      - PG_HOST=${POSTGRES_HOST}
+      - PG_PORT=${POSTGRES_PORT}
     depends_on:
       - pgdatabase
   dashboard:
@@ -65,13 +67,14 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./matabase-data:/metabase-data
+      - ./metabase-data:/metabase-data
     environment:
       - MB_DB_FILE=/metabase-data/metabase.db
-  ```
+```
 
+## Dashboard
+Because metabase was ran locally the dashboard can't be shared, but below are images
 
-
-
-
+![alt first](https://github.com/Raatid-Dilly/Soccer-Leagues-DB/blob/main/images/Metabase_dashboard1.png)
+![alt second](https://github.com/Raatid-Dilly/Soccer-Leagues-DB/blob/main/images/Metabase_dashboard2.png)
 
