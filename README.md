@@ -1,6 +1,8 @@
 # Soccer-Leagues-DB
 
 ## Overview
+![alt flow](https://github.com/Raatid-Dilly/Soccer-Leagues-DB/blob/main/images/flow.jpg)
+
 [API-Football](https://rapidapi.com/api-sports/api/api-football/) was used to get soccer data including player and team statistics to build a PostgreSQL Database with various soccer leagues for the 2019, 2020, and 2021 seasons.  The database contains tables for leagues, teams, players, standings, team statistics, player statistics, and topscorers. As there are a large number of columns for several tables, ```pandas.DataFrame.to_sql()``` was prefered opposed to manually inserting values into the database. Due to this the datatypes of the values inserted were often wrong and would require correction. After all the tables are loaded into the database, they are then inserted into another schema.table with the correct datatypes and with primary/foreign key values. Lastly, Metabase was used to create a local dashboard for visual analysis.
 
 
